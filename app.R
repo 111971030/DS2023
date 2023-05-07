@@ -1,5 +1,9 @@
 library(shiny)
 library(shinydashboard)
+library(tidyverse)
+library(DT)
+
+Titanic <- read_csv("Titanic/train.csv")
 
 ui <- dashboardPage(
   dashboardHeader(),
@@ -20,7 +24,8 @@ ui <- dashboardPage(
                        
                 ),
                 column(8, 
-                       h2("Information right")
+                       h2("Information right"),
+                       DT::dataTableOutput("mytable")
                 )
               )
       ),
@@ -39,6 +44,14 @@ ui <- dashboardPage(
 )
 
 
-server <- function(input, output) { }
+server <- function(input, output) {
+  #count NA values in each column
+  Titanic_NA <- sapply(Titanic, function(x) sum(is.na(x)))
+  
+  output$mytable <- DT::renderDataTable(Titanic_NA,
+                                        options = list(scrollX = TRUE),
+                                        rownames = FALSE)
+  
+}
 
 shinyApp(ui, server)
