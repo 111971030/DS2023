@@ -96,7 +96,7 @@ str(Titanic_train_subset)
 # ----> 目前欄位都為數值型資料了!!! 這樣待會就可以順利匯入模型，進行預測了。
 
 # 資料標準化(standardization)
-# 因為在資料中，是用不同資料欄位與資料值所組成，他們分佈狀況可能都不盡相同，因此，就必須將特徵資料按比例縮放，讓資料落在某一特定的區間。
+# 因為在資料中，不同資料欄位與資料值所組成，他們分佈狀況可能都不盡相同，因此，就必須將特徵資料按比例縮放，讓資料落在某一特定的區間。
 Titanic_train_subset_scale <- Titanic_train_subset
 Titanic_train_subset_scale[2 : 8] <- as.data.frame(scale(Titanic_train_subset_scale[2 : 8]))
 
