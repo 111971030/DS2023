@@ -7,21 +7,12 @@ Titanic <- read_csv("Titanic/train.csv")
 
 ## 資料清理
 # 0 確認資料幾列幾欄
-glimpse(Titanic)
-# Rows: 891 (data)
-# Columns: 12 (feature)
-# $ PassengerId <dbl> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, …
-# $ Survived    <dbl> 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, …
-# $ Pclass      <dbl> 3, 1, 3, 1, 3, 3, 1, 3, 3, 2, 3, 1, 3, 3, 3, 2, 3, 2, 3, 3, 2, 2, 3, 1, 3, 3, 3, 1, 3, 3, 1, 1, 3, …
-# $ Name        <chr> "Braund, Mr. Owen Harris", "Cumings, Mrs. John Bradley (Florence Briggs Thayer)", "Heikkinen, Miss.…
-# $ Sex         <chr> "male", "female", "female", "female", "male", "male", "male", "male", "female", "female", "female",…
-# $ Age         <dbl> 22, 38, 26, 35, 35, NA, 54, 2, 27, 14, 4, 58, 20, 39, 14, 55, 2, NA, 31, NA, 35, 34, 15, 28, 8, 38,…
-# $ SibSp       <dbl> 1, 1, 0, 1, 0, 0, 0, 3, 0, 1, 1, 0, 0, 1, 0, 0, 4, 0, 1, 0, 0, 0, 0, 0, 3, 1, 0, 3, 0, 0, 0, 1, 0, …
-# $ Parch       <dbl> 0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 5, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 5, 0, 2, 0, 0, 0, 0, 0, …
-# $ Ticket      <chr> "A/5 21171", "PC 17599", "STON/O2. 3101282", "113803", "373450", "330877", "17463", "349909", "3477…
-# $ Fare        <dbl> 7.2500, 71.2833, 7.9250, 53.1000, 8.0500, 8.4583, 51.8625, 21.0750, 11.1333, 30.0708, 16.7000, 26.5…
-# $ Cabin       <chr> NA, "C85", NA, "C123", NA, NA, "E46", NA, NA, NA, "G6", "C103", NA, NA, NA, NA, NA, NA, NA, NA, NA,…
-# $ Embarked    <chr> "S", "C", "S", "S", "S", "Q", "S", "S", "S", "C", "S", "S", "S", "S", "S", "S", "Q", "S", "S", "C",…
+dimensions <- dim(Titanic)
+num_rows <- dimensions[1]  # 行数
+num_cols <- dimensions[2]  # 列数
+cat("row:",num_rows,"\n","col:",num_cols,"\n")
+# row: 891 
+# col: 12 
 
 # 1. 有無缺失值
 # count NA values in each column
@@ -39,7 +30,10 @@ Titanic_train <- subset(Titanic, select = -c(PassengerId, Name, Ticket, Cabin))
 Titanic_train <- Titanic_train[complete.cases(Titanic_train[,c("Embarked","Age")]),]
 
 # 2.1 來看一下處理完剩下幾列幾欄(特徵)
-glimpse(Titanic_train)
+dimensions <- dim(Titanic_train)
+num_rows <- dimensions[1]  # 行数
+num_cols <- dimensions[2]  # 列数
+cat("row:",num_rows,"\n","col:",num_cols,"\n")
 # Rows: 712 (data)
 # Columns: 8 (feature)
 # $ Survived <dbl> 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, …
@@ -106,6 +100,17 @@ str(Titanic_train_subset)
 Titanic_train_subset_scale <- Titanic_train_subset
 Titanic_train_subset_scale[2 : 8] <- as.data.frame(scale(Titanic_train_subset_scale[2 : 8]))
 
+head(Titanic_train_subset_scale)
+# 確認scale後的資料
+# A tibble: 6 × 8
+# Survived Pclass    Age  SibSp  Parch   Fare Sex_factors Embarked_factors
+# <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>       <dbl>            <dbl>
+#   1        0  0.908 -0.527  0.522 -0.506 -0.516       0.756            0.519
+# 2        1 -1.48   0.577  0.522 -0.506  0.694      -1.32            -2.05 
+# 3        1  0.908 -0.251 -0.552 -0.506 -0.503      -1.32             0.519
+# 4        1 -1.48   0.370  0.522 -0.506  0.350      -1.32             0.519
+# 5        0  0.908  0.370 -0.552 -0.506 -0.501       0.756            0.519
+# 6        0 -1.48   1.68  -0.552 -0.506  0.327       0.756            0.519
 
 
 #固定random資料

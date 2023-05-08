@@ -38,15 +38,12 @@
 								<h2>Missing data</h2>
 							</div>
 						</header>
-						
 						<h2 class="article_head">
 							①　確認有無Missing data
 						</h2>
-						
 						<div class="article_code">
 							sapply(Titanic, function(x) sum(is.na(x)))
 						</div><br/>
-
 						<table>
 							<tr>
 								<th>PassengerId</th>
@@ -86,7 +83,6 @@
 						<h2 class="article_head">
 							②　Drop不必要欄位
 						</h2>
-						
 						●　PassengerId、Name、Ticket等欄位對於是否存活沒有影響， 且Cabin的missing data過多，因此選擇將這些columns刪除。<br/>
 						●　再來，將Embarked和Age的資料中有missing data的rows刪除 <br/>
 						
@@ -96,14 +92,26 @@
 						</div><br/>
 							查看刪除missing data後，剩下多少資料 <br/>
 						<div class="article_code">
-							glimpse(Titanic_train)
+							dimensions <- dim(Titanic_train) <br/>
+							num_rows <- dimensions[1]  # 行数 <br/>
+							num_cols <- dimensions[2]  # 列数 <br/>
+							cat("row:",num_rows,"\n","col:",num_cols,"\n")
 						</div><br/>
-						<img src="images/01.png"><br/><br/>
+						<table>
+							<tr>
+								<th>Rows</th>
+								<th>Columns</th>
+							</tr>
+							<tr>
+								<td>712 (data)</td>
+								<td>8 (feature)</td>
+							</tr>
+						</table>
 						<div class="article_comment">
 							刪除後的資料剩下<b>712</b>筆資料和<b>8</b>欄feature。
-						</div>
-							
+						</div>		
 					</article>
+
 					<a name="Section2"></a>
 					<article class="post">
 						<header>
@@ -114,15 +122,56 @@
 						<h2 class="article_head">
 							①　確認8欄feature的資料型態 	
 						</h2>
-						
 						<div class="article_code">
-							glimpse(Titanic_train)
+							str(Titanic_train)
 						</div><br/>
-						<img src="images/01.png"><br/><br/>
+						<img src="images/feature_01.png"><br/><br/>
 						<div class="article_comment">
 							<b>Sex</b>和<b>Embarked</b>不是的數值型的資料，因此需要進行encode。
 						</div>
+
+						<hr>
+						
+						<h2 class="article_head">
+							②　查看「Sex」欄位裡頭有哪些值，並將資料轉換成數值型。
+						</h2>
+						<div class="article_code">
+							unique(Titanic_train[c("Sex")]) <br/>
+							Titanic_train$Sex_factors <- as.numeric(factor(Titanic_train$Sex))
+						</div><br/>
+						<img src="images/feature_02.png"><br/><br/>
+						<div class="article_comment">
+							「Sex」欄位有 [‘male’, ‘female’] → 「Sex_factors」欄位 [2, 1]
+						</div>
+
+						<hr>
+						
+						<h2 class="article_head">
+							③　查看「Embarked」欄位裡頭有哪些值，並將資料轉換成數值型。
+						</h2>
+						<div class="article_code">
+							unique(Titanic_train[c("Embarked")]) <br/>
+							Titanic_train$Embarked_factors <- as.numeric(factor(Titanic_train$Embarked))
+						</div><br/>
+						<img src="images/feature_03.png"><br/><br/>
+						<div class="article_comment">
+							「Embarked」欄位有 [‘S’, ‘C’,‘Q’] - > 「Embarked_factors」欄位 [3,1,2]
+						</div>
+
+						<hr>
+						
+						<h2 class="article_head">
+							④　確認資料都是數值型。
+						</h2>
+						<div class="article_code">
+							str(Titanic_train_subset)
+						</div><br/>
+						<img src="images/feature_04.png"><br/><br/>
+						<div class="article_comment">
+							目前欄位都為數值型資料
+						</div>
 					</article>
+
 					<a name="Section3"></a>
 					<article class="post">
 						<header>
@@ -130,7 +179,24 @@
 								<h2>Scaling</h2>
 							</div>
 						</header>
-						
+						<h2 class="article_head">
+							①　對feature資料進行z-score 標準化。(平均值為0，標準差為1)
+						</h2>
+							因為在資料中，不同資料欄位與資料值所組成，他們分佈狀況可能都不盡相同，因此，就必須將特徵資料按比例縮放，讓資料落在某一特定的區間。<br/>
+						<div class="article_code">
+							Titanic_train_subset_scale <- Titanic_train_subset <br/>
+							Titanic_train_subset_scale[2 : 8] <- as.data.frame(scale(Titanic_train_subset_scale[2 : 8]))
+						</div><br/>
+						<h2 class="article_head">
+							②　確認資料都是已經scaling。
+						</h2>
+						<div class="article_code">
+							head(Titanic_train_subset_scale)
+						</div><br/>
+						<img src="images/feature_05.png"><br/><br/>
+						<div class="article_comment">
+							目前欄位都為數值型資料
+						</div>
 					</article>
 				</div>
 				<!-- Sidebar -->
