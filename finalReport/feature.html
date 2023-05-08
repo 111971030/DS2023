@@ -1,0 +1,156 @@
+<!DOCTYPE HTML>
+<!--
+	Future Imperfect by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+	https://html5up.net/future-imperfect
+-->
+<html>
+	<head>
+		<title>Data Science Final Project</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="is-preload">
+		<!-- Wrapper -->
+			<div id="wrapper">
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="index.html">期末報告 Group 2</a></h1>
+						<nav class="links">
+							<ul>
+								<li><a href="index.html">背景介紹(Backgroud)</a></li>
+								<li><a href="eda.html">探索性資料分析(EDA)</a></li>
+								<li><a href="feature.html" class="selected">特徵提取(Feature extraction)</a></li>
+								<li><a href="model.html">建立模組(Modeling)</a></li>
+								<li><a href="summary.html">結論(Summary)</a></li>
+								<li><a href="reference.html">參考資料(Reference)</a></li>
+							</ul>
+						</nav>
+					</header>
+				<!-- Main -->
+				<div id="main" style="margin-left: 22em;">
+					<a name="Section1"></a>
+					<article class="post">
+						<header>
+							<div class="title">
+								<h2>Missing data</h2>
+							</div>
+						</header>
+						
+						<h2 class="article_head">
+							①　確認有無Missing data
+						</h2>
+						
+						<div class="article_code">
+							sapply(Titanic, function(x) sum(is.na(x)))
+						</div><br/>
+
+						<table>
+							<tr>
+								<th>PassengerId</th>
+								<th>Survived</th>
+								<th>Pclass</th>
+								<th>Name</th>
+								<th>Sex</th>
+								<th>Age</th>
+								<th>SibSp</th>
+								<th>Parch</th>
+								<th>Ticket</th>
+								<th>Fare</th>
+								<th>Cabin</th>
+								<th>Embarked</th>
+							</tr>
+							<tr>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>177</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>0</td>
+								<td>687</td>
+								<td>2</td>
+							</tr>
+						</table>
+						<div class="article_comment">
+							發現<b>Age</b>、<b>Cabin</b>與<b>Embarked</b>三個欄位都有missing data，其中<b>Cabin</b>有687筆missing data。
+						</div>
+						
+						<hr>
+
+						<h2 class="article_head">
+							②　Drop不必要欄位
+						</h2>
+						
+						●　PassengerId、Name、Ticket等欄位對於是否存活沒有影響， 且Cabin的missing data過多，因此選擇將這些columns刪除。<br/>
+						●　再來，將Embarked和Age的資料中有missing data的rows刪除 <br/>
+						
+						<div class="article_code">
+							Titanic_train <- subset(Titanic, select = -c(PassengerId, Name, Ticket, Cabin)) <br/>
+							Titanic_train <- Titanic_train[complete.cases(Titanic_train[,c("Embarked","Age")]),]
+						</div><br/>
+							查看刪除missing data後，剩下多少資料 <br/>
+						<div class="article_code">
+							glimpse(Titanic_train)
+						</div><br/>
+						<img src="images/01.png"><br/><br/>
+						<div class="article_comment">
+							刪除後的資料剩下<b>712</b>筆資料和<b>8</b>欄feature。
+						</div>
+							
+					</article>
+					<a name="Section2"></a>
+					<article class="post">
+						<header>
+							<div class="title">
+								<h2>Label encoding</h2>
+							</div>
+						</header>
+						<h2 class="article_head">
+							①　確認8欄feature的資料型態 	
+						</h2>
+						
+						<div class="article_code">
+							glimpse(Titanic_train)
+						</div><br/>
+						<img src="images/01.png"><br/><br/>
+						<div class="article_comment">
+							<b>Sex</b>和<b>Embarked</b>不是的數值型的資料，因此需要進行encode。
+						</div>
+					</article>
+					<a name="Section3"></a>
+					<article class="post">
+						<header>
+							<div class="title">
+								<h2>Scaling</h2>
+							</div>
+						</header>
+						
+					</article>
+				</div>
+				<!-- Sidebar -->
+				<section id="sidebar" style="position: fixed;left: 6em;">
+					<!-- Posts List -->
+						<section>
+							<ul class="posts">
+								<li>
+									<article><header><h3><a href="#Section1">Missing data</a></h3></header></article>
+								</li>
+								<li>
+									<article><header><h3><a href="#Section2">Label encoding</a></h3></header></article>
+								</li>
+								<li>
+									<article><header><h3><a href="#Section3">Scaling</a></h3></header></article>
+								</li>
+							</ul>
+						</section>
+				</section>
+			</div>
+
+	</body>
+</html>
