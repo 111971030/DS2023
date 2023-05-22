@@ -1,12 +1,21 @@
 # install.packages("tidyverse")
 # install.packages("DT")
+
+if(!require('tidyverse')) {
+  install.packages('tidyverse')
+  library('tidyverse')
+}
+if(!require('DT')) {
+  install.packages('DT')
+  library('DT')
+}
 library(tidyverse)
 library(DT)
 library(ggplot2)
 library(gridExtra)
 
 # 讀取資料
-df <- read_csv("train.csv")
+df <- read_csv("Titanic/train.csv")
 
 # 列印前 10 筆資料
 head(df, 10)

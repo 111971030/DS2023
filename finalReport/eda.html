@@ -101,34 +101,129 @@
 								<h2>前10筆資料</h2>
 							</div>
 						</header>
-						
+						<h2 class="article_head">
+							確認大致資料內容
+						</h2>
+						<div class="article_code">
+							head(df, 10)
+						</div><br/>
+						<img style="width: 100%;" src="images/eda_01.png"><br/><br/>
 					</article>
 					<a name="Section3"></a>
+					<article class="post">
+						<header>
+							<div class="title">
+								<h2>Dataset中有幾欄有幾列</h2>
+							</div>
+						</header>
+						<h2 class="article_head">
+							計算並列印資料行列數量
+						</h2>
+						<div class="article_code">
+							dimensions <- dim(df) <br/>
+							num_rows <- dimensions[1]  <br/>
+							num_cols <- dimensions[2]  <br/>
+							cat("row:",num_rows,"\n","col:",num_cols,"\n")<br/>
+						</div><br/>
+						<img src="images/eda_02.png"><br/><br/>
+						<div class="article_comment">
+							總共有<b>891</b>筆資料和<b>12</b>欄feature。
+						</div>	
+					</article>
+					<a name="Section4"></a>
 					<article class="post">
 						<header>
 							<div class="title">
 								<h2>資料統計資訊</h2>
 							</div>
 						</header>
-						
+						<h2 class="article_head">
+							觀察每個 feature 的分佈情形
+						</h2>
+						<div class="article_code">
+							vars <- c("PassengerId", "Survived", "Pclass","Age","SibSp","Parch","Fare") <br/>
+							summary(df[, vars])<br/>
+						</div><br/>
+						<img style="width: 100%;" src="images/eda_03.png"><br/><br/>
+						<div class="article_comment">
+							其中Age有一些缺失值，且欄位中的最大最小值、平均值等分布不同，進行訓練前，需要先將資料進行normalize
+						</div>	
 					</article>
-					<a name="Section4"></a>
+					<a name="Section5"></a>
 					<article class="post">
 						<header>
 							<div class="title">
 								<h2>最後到底有多少人存活</h2>
 							</div>
 						</header>
-						
+						<h2 class="article_head">
+							查看觀察生存的人數
+						</h2>
+						<div class="article_code">
+							survived_value <- table(df$Survived)
+						</div><br/>
+						<img src="images/eda_04-1.png"><br/><br/>
+						<h2 class="article_head">
+							用長條圖的方式表示
+						</h2>
+						<div class="article_code">
+							death <- survived_value[1]&nbsp;&nbsp;&nbsp;&nbsp;  # 0:表示死亡<br/>
+							survive <- survived_value[2]&nbsp;&nbsp;&nbsp;&nbsp;   # 1:表示生存<br/>
+							counts <- c(death, survive)<br/>
+							barplot(counts, names.arg = c("0", "1"), <br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;xlab = "Survived", ylab = "Quantity",<br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;main = "Survived",<br/>
+							&nbsp;&nbsp;&nbsp;&nbsp;col = c("brown1", "chartreuse3"))<br/>
+						</div><br/>
+						<img style="width: 100%;" src="images/eda_04-2.png"><br/><br/>
+						<div class="article_comment">
+							最後有<b>549</b>人罹難和<b>342</b>人獲救。
+						</div>	
 					</article>
-					<a name="Section5"></a>
+					<a name="Section6"></a>
 					<article class="post">
 						<header>
 							<div class="title">
 								<h2>特徵 V.S. 是否存活</h2>
 							</div>
 						</header>
-						
+						<h2 class="article_head">
+							用長條圖的方式表示
+						</h2>
+						<div class="article_code">
+							features <- c("Pclass", "Sex", "SibSp","Parch","Embarked")<br/>
+							n_rows <- 2<br/>
+							n_cols <- 3<br/><br/>
+							fig <- ggplot() +<br/>
+							theme_void() +<br/>
+							theme(plot.margin = unit(c(1, 1, 1, 1), 'lines'))<br/><br/>
+							plot_list <- list()<br/><br/>
+							for (r in 1:n_rows) {<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;for (c in 1:n_cols) {<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;i <- (r - 1) * n_cols + c<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (i <= 5) {<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plot <- ggplot(df, aes_string(x = features[i])) +<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;geom_bar(aes(fill = factor(Survived)), position = 'dodge') +<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;labs(title = features[i], x = NULL, y = 'Count') +<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;theme(plot.title = element_text(hjust = 0.5, size = 12),<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;legend.position = 'right', legend.title = element_blank())<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plot_list[[i]] <- plot<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;}<br/>
+							}<br/>
+							grid.arrange(grobs = plot_list, nrow = n_rows, ncol = n_cols)<br/>
+						</div><br/>
+						<img style="width: 100%;" src="images/eda_05.png"><br/><br/>
+						<div class="article_comment">
+							大致可以觀察出<br/>
+							<ul>
+								<li>女性存活的機會比男性來得高</li>
+								<li>頭等艙存活機會較高</li>
+								<li>可能有帶兄弟姊妹、老婆丈夫的乘客存活機會較高</li>
+								<li>有帶小孩父母親的存活機會較高</li>
+								<li>從S碼頭出發有可能艙位比較低，存活機會較低</li>
+							</ul>
+						</div>	
 					</article>
 				</div>
 				<!-- Sidebar -->

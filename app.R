@@ -1,56 +1,71 @@
 library(shiny)
-library(shinydashboard)
-library(tidyverse)
-library(DT)
+if(!require('ggplot2')) {
+  install.packages('ggplot2')
+  library('ggplot2')
+}
+if(!require('gridExtra')) {
+  install.packages('gridExtra')
+  library('gridExtra')
+}
+if(!require('tidyverse')) {
+  install.packages('tidyverse')
+  library('tidyverse')
+}
 
-Titanic <- read_csv("Titanic/train.csv")
+# Read data
+df <- read_csv("Titanic/train.csv")
 
-ui <- dashboardPage(
-  dashboardHeader(),
-  dashboardSidebar(
-    sidebarMenu(
-      menuItem("Information", tabName = "Information", icon = icon("th")),
-      menuItem("Modeling", tabName = "Modeling", icon = icon("gear")),
-      menuItem("Result", tabName = "Result", icon = icon("dashboard"))
-    )
-  ),
-  dashboardBody(
-    tabItems(
-      # First tab content
-      tabItem(tabName = "Information",
-              fluidRow(
-                column(4, 
-                       h2("Information left"),
-                       
-                ),
-                column(8, 
-                       h2("Information right"),
-                       DT::dataTableOutput("mytable")
-                )
-              )
-      ),
-      
-      # Second tab content
-      tabItem(tabName = "Modeling",
-              h2("Modeling tab content")
-      ),
-      
-      # Third tab content
-      tabItem(tabName = "Result",
-              h2("Result tab content")
-      )
+# Set features
+features <- c("Pclass", "Sex", "SibSp", "Parch", "Embarked")
+
+
+ui <- fluidPage(
+  # navbar
+  navbarPage(
+    title = "",
+    tabPanel("Information", 
+             fluidPage(
+               fluidRow(
+                 column(4, 
+                        selectInput("features", "Select feature:", choices = features, selected = features[1], multiple = TRUE)
+                 ),
+                 column(8, 
+                        plotOutput("plot",width = "800px", height = "800px")
+                 )
+               )
+             )
+    ),
+    tabPanel("Modeling", 
+             fluidPage(
+               
+             )
+    ),
+    tabPanel("Result",
+             fluidPage(
+               
+             )
     )
   )
 )
 
-
 server <- function(input, output) {
-  #count NA values in each column
-  Titanic_NA <- sapply(Titanic, function(x) sum(is.na(x)))
-  
-  output$mytable <- DT::renderDataTable(Titanic_NA,
-                                        options = list(scrollX = TRUE),
-                                        rownames = FALSE)
+
+  output$plot <- renderPlot({
+    selected_features <- input$features
+    
+    plots <- lapply(selected_features, function(feature) {
+      plot <- ggplot(df, aes_string(x = feature)) +
+        geom_bar(aes(fill = factor(Survived)), position = 'dodge') +
+        labs(title = feature, x = NULL, y = NULL) +
+        theme(plot.title = element_text(hjust = 0.5, size = 20),
+              legend.position = 'right', legend.title = element_blank(),
+              axis.text = element_text(size = 16, face = "bold"))
+      print(plot)
+    })
+    
+    grid.arrange(grobs = plots, ncol = 1)
+    
+  })
   
 }
 
