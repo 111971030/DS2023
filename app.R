@@ -1,4 +1,5 @@
 library(shiny)
+Sys.setlocale("LC_ALL", "en_US.UTF-8")
 if(!require('ggplot2')) {
   install.packages('ggplot2')
   library('ggplot2')
@@ -13,7 +14,7 @@ if(!require('tidyverse')) {
 }
 
 # Read data
-df <- read_csv("Titanic/train.csv")
+df <- read_csv("Titanic/train.csv", locale = readr::locale(encoding = "UTF-8"))
 
 # Set features
 features <- c("Pclass", "Sex", "SibSp", "Parch", "Embarked")
@@ -30,7 +31,7 @@ ui <- fluidPage(
                         selectInput("features", "Select feature:", choices = features, selected = features[1], multiple = TRUE)
                  ),
                  column(8, 
-                        plotOutput("plot",width = "800px", height = "800px")
+                        plotOutput("plot",width = "400px", height = "400px")
                  )
                )
              )
@@ -54,7 +55,7 @@ server <- function(input, output) {
     selected_features <- input$features
     
     plots <- lapply(selected_features, function(feature) {
-      plot <- ggplot(df, aes_string(x = feature)) +
+      plot <- ggplot(df, aes(x = feature)) +
         geom_bar(aes(fill = factor(Survived)), position = 'dodge') +
         labs(title = feature, x = NULL, y = NULL) +
         theme(plot.title = element_text(hjust = 0.5, size = 20),

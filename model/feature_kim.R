@@ -135,9 +135,8 @@ lr_ctrl <- trainControl(method="cv",
                         number=5, 
                         savePredictions="all",
                         classProbs=TRUE)
-logistic_model <- train(Survived ~ ., data = res$train, method = "glm", family = "binomial", trControl = lr_ctrl)
 
-# logistic_model <- train(Survived ~ ., data = res$train, method="glm", family = "binomial", trControl = lr_ctrl)
+logistic_model <- train(Survived ~ ., data = res$train, method="glm", family = "binomial", trControl = lr_ctrl)
 
 # 預測訓練集
 train_pred <- predict(logistic_model, newdata = res$train)
@@ -234,11 +233,11 @@ for (i in 1:length(knn_list)) {
   # 記錄預測訓練及的準確值
   knn_result_list[[i]] <- list(k = knn_list[i],
                                train_accuracy = train_accuracy,
-                               train_cf_table = confusion_matrix,
+                               train_cf_table = train_confusion_matrix,
                                validate_accuracy = validate_accuracy,
-                               validate_cf_table = confusion_matrix,
+                               validate_cf_table = validate_confusion_matrix,
                                test_accuracy = test_accuracy,
-                               test_cf_table = confusion_matrix)
+                               test_cf_table = test_confusion_matrix)
 }
 
 # 找到KNN列表中的最高準確率和其索引
