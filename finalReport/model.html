@@ -35,85 +35,67 @@
 					<article class="post">
 						<header>
 							<div class="title">
-								<h2>Logistic Regression</h2>
+								<h2>利用K-fold進行訓練</h2>
 							</div>
 						</header>
-						<h2 class="article_head">
-							①　對feature資料進行z-score 標準化。(平均值為0，標準差為1)
-						</h2>
-							因為在資料中，不同資料欄位與資料值所組成，他們分佈狀況可能都不盡相同，因此，就必須將特徵資料按比例縮放，讓資料落在某一特定的區間。<br/>
 						<div class="article_code">
-							<span class="comment_code"># Logistic regression</span><br/>
-							library(caret)<br/>
-							<span class="comment_code"># 設定5-fold</span><br/>
-							lr_ctrl <- trainControl(method="cv", number=5, savePredictions="all", classProbs=TRUE)<br/>
-							<span class="comment_code"># 設定Logistic regression model</span><br/>
-							logistic_model <- train(Survived ~ ., data = res$train, method="glm", family = "binomial", trControl = lr_ctrl)<br/>
+							<span class="comment_code"></span># Set up the trainControl object for 5-fold cross-validation</span><br/>
+							ctrl <- trainControl(method = "cv", number = 5, savePredictions = "all", classProbs = TRUE)<br/>
 						</div><br/>
-						<h2 class="article_head">
-							②　確認資料都是已經scaling。
-						</h2>
-						<div class="article_code">
-							head(Titanic_train_subset_scale)
-						</div><br/>
-						<img src="images/feature_05.png"><br/><br/>
-						<div class="article_comment">
-							目前欄位都為數值型資料
-						</div>
 					</article>
 					<a name="Section2"></a>
 					<article class="post">
 						<header>
 							<div class="title">
-								<h2>KNeighbors</h2>
+								<h2>建立訓練模組</h2>
 							</div>
 						</header>
-						
+						<ul>
+							<li>Logistic regression</li>
+							<li>K nearest neighbors</li>
+							<li>SVC Linear</li>
+							<li>SVC RBF</li>
+							<li>Gaussian Naive Bayes</li>
+							<li>Decision Tree</li>
+							<li>Random Forest Classifier</li>
+						</ul>
+						<div class="article_code">
+							if(model_name == "Logistic regression"){<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived ~ ., data = train_data, method = "glm", trControl = ctrl, family = "binomial")<br/>
+							} else if(model_name == "K nearest neighbors"){<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived ~ ., data = train_data, method = "knn", trControl = ctrl, preProcess = c("center", "scale"),tuneLength = 3)<br/>
+							} else if(model_name == "SVC Linear"){<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived ~ ., data = train_data, kernel = "svm", trControl = ctrl, scale = FALSE)<br/>
+							} else if(model_name == "SVC RBF"){<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived ~ ., data = train_data, kernel = "radial", trControl = ctrl, scale = FALSE)<br/>
+							} else if(model_name == "Gaussian Naive Bayes"){<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived ~ ., data = train_data, kernel = "naiveBayes", trControl = ctrl)<br/>
+							} else if(model_name == "Decision Tree"){<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived~., data = train_data, method = 'rpart', trControl = ctrl)<br/>
+							} else if(model_name == "Random Forest Classifier"){<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived~., data = train_data, method = 'rf', trControl = ctrl)<br/>
+							}<br/>
+						</div><br/>
 					</article>
 					<a name="Section3"></a>
 					<article class="post">
 						<header>
 							<div class="title">
-								<h2>SVC linear</h2>
+								<h2>使用training data 訓練後的準確率及混淆矩陣</h2>
 							</div>
 						</header>
+						<img src="images/model_01.png"><br/><br/>
 					</article>
 
 					<a name="Section4"></a>
 					<article class="post">
 						<header>
 							<div class="title">
-								<h2>SVC RBF</h2>
+								<h2>使用test data 訓練後的準確率及混淆矩陣</h2>
 							</div>
 						</header>
 					</article>
 					
-					<a name="Section5"></a>
-					<article class="post">
-						<header>
-							<div class="title">
-								<h2>Gaussian NB</h2>
-							</div>
-						</header>
-					</article>
-					
-					<a name="Section6"></a>
-					<article class="post">
-						<header>
-							<div class="title">
-								<h2>Dicision Tree</h2>
-							</div>
-						</header>
-					</article>
-					
-					<a name="Section7"></a>
-					<article class="post">
-						<header>
-							<div class="title">
-								<h2>Random Forest</h2>
-							</div>
-						</header>
-					</article>
 				</div>
 				<!-- Sidebar -->
 				<section id="sidebar" style="position: fixed;left: 6em;">
@@ -121,25 +103,16 @@
 						<section>
 							<ul class="posts">
 								<li>
-									<article><header><h3><a href="#Section1">Logistic Regression</a></h3></header></article>
+									<article><header><h3><a href="#Section1">利用K-fold進行訓練</a></h3></header></article>
 								</li>
 								<li>
-									<article><header><h3><a href="#Section2">KNeighbors</a></h3></header></article>
+									<article><header><h3><a href="#Section2">建立訓練模組</a></h3></header></article>
 								</li>
 								<li>
-									<article><header><h3><a href="#Section3">SVC linear</a></h3></header></article>
+									<article><header><h3><a href="#Section3">使用training data 訓練後的準確率及混淆矩陣</a></h3></header></article>
 								</li>
 								<li>
-									<article><header><h3><a href="#Section4">SVC RBF</a></h3></header></article>
-								</li>
-								<li>
-									<article><header><h3><a href="#Section5">Gaussian NB</a></h3></header></article>
-								</li>
-								<li>
-									<article><header><h3><a href="#Section6">Dicision Tree</a></h3></header></article>
-								</li>
-								<li>
-									<article><header><h3><a href="#Section7">Random Forest</a></h3></header></article>
+									<article><header><h3><a href="#Section4">使用test data 訓練後的準確率及混淆矩陣</a></h3></header></article>
 								</li>
 							</ul>
 						</section>
