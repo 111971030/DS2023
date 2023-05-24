@@ -3040,6 +3040,11 @@ input, select, textarea {
 		background-color: #4c4c4c; 
 		color: #FFF;
 	}
+
+	.comment_code{
+		color: #008000;
+	}
+
 	.article_comment{
 		padding:16px; 
 		color: #8a6d3b; 

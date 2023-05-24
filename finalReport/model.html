@@ -24,7 +24,7 @@
 								<li><a href="eda.html">探索性資料分析(EDA)</a></li>
 								<li><a href="feature.html">特徵提取(Feature extraction)</a></li>
 								<li><a href="model.html" class="selected">建立模組(Modeling)</a></li>
-								<li><a href="demo.html">Demo</a></li>
+								<li><a href="demo.html">實際演練(Demo)</a></li>
 								<li><a href="reference.html">參考資料(Reference)</a></li>
 							</ul>
 						</nav>
@@ -38,7 +38,28 @@
 								<h2>Logistic Regression</h2>
 							</div>
 						</header>
-						
+						<h2 class="article_head">
+							①　對feature資料進行z-score 標準化。(平均值為0，標準差為1)
+						</h2>
+							因為在資料中，不同資料欄位與資料值所組成，他們分佈狀況可能都不盡相同，因此，就必須將特徵資料按比例縮放，讓資料落在某一特定的區間。<br/>
+						<div class="article_code">
+							<span class="comment_code"># Logistic regression</span><br/>
+							library(caret)<br/>
+							<span class="comment_code"># 設定5-fold</span><br/>
+							lr_ctrl <- trainControl(method="cv", number=5, savePredictions="all", classProbs=TRUE)<br/>
+							<span class="comment_code"># 設定Logistic regression model</span><br/>
+							logistic_model <- train(Survived ~ ., data = res$train, method="glm", family = "binomial", trControl = lr_ctrl)<br/>
+						</div><br/>
+						<h2 class="article_head">
+							②　確認資料都是已經scaling。
+						</h2>
+						<div class="article_code">
+							head(Titanic_train_subset_scale)
+						</div><br/>
+						<img src="images/feature_05.png"><br/><br/>
+						<div class="article_comment">
+							目前欄位都為數值型資料
+						</div>
 					</article>
 					<a name="Section2"></a>
 					<article class="post">
