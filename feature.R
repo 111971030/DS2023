@@ -21,6 +21,7 @@ preprocess_data <- function(data) {
     # Drop the columns
     data_train <- subset(data, select = -c(PassengerId, Name, Ticket, Cabin))
     # Remove the rows with missing values
+    data_train$Fare[is.na(data_train$Fare)] <- mean(data_train$Fare, na.rm = TRUE)
     data_train <- data_train[complete.cases(data_train[,c("Embarked","Age")]),]
 
     # 2.1 來看一下處理完剩下幾列幾欄(特徵)
@@ -92,7 +93,7 @@ preprocess_data <- function(data) {
     # 資料標準化(standardization)
     # 因為在資料中，不同資料欄位與資料值所組成，他們分佈狀況可能都不盡相同，因此，就必須將特徵資料按比例縮放，讓資料落在某一特定的區間。
     data_train_subset_scale <- data_train_subset
-    data_train_subset_scale[2 : num_cols] <- as.data.frame(scale(data_train_subset_scale[2 : num_cols]))
+    data_train_subset_scale[, -which(names(data_train_subset_scale) == "Survived")] <- as.data.frame(scale(data_train_subset_scale[, -which(names(data_train_subset_scale) == "Survived")]))
 
     head(data_train_subset_scale)
     # 確認scale後的資料
@@ -109,6 +110,7 @@ preprocess_data <- function(data) {
     # Convert categorical variables to factors
     data_train_subset_scale$Survived <- ifelse(data_train_subset_scale$Survived == 1, "Yes", "No")
     data_train_subset_scale$Survived <- as.factor(data_train_subset_scale$Survived)
+    
     
     #固定random資料
     set.seed(1)

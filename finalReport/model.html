@@ -35,11 +35,11 @@
 					<article class="post">
 						<header>
 							<div class="title">
-								<h2>利用K-fold進行訓練</h2>
+								<h2>設定K-fold</h2>
 							</div>
 						</header>
 						<div class="article_code">
-							<span class="comment_code"></span># Set up the trainControl object for 5-fold cross-validation</span><br/>
+							<span class="comment_code"># Set up the trainControl object for 5-fold cross-validation</span><br/>
 							ctrl <- trainControl(method = "cv", number = 5, savePredictions = "all", classProbs = TRUE)<br/>
 						</div><br/>
 					</article>
@@ -81,7 +81,7 @@
 					<article class="post">
 						<header>
 							<div class="title">
-								<h2>使用training data 訓練後的準確率及混淆矩陣</h2>
+								<h2>訓練結果</h2>
 							</div>
 						</header>
 						<img src="images/model_01.png"><br/><br/>
@@ -91,11 +91,63 @@
 					<article class="post">
 						<header>
 							<div class="title">
-								<h2>使用test data 訓練後的準確率及混淆矩陣</h2>
+								<h2>驗證模組</h2>
 							</div>
 						</header>
+						<div class="article_code">
+							model_list <- c("Logistic regression","K nearest neighbors","SVC Linear","SVC RBF","Gaussian Naive Bayes","Decision Tree","Random Forest Classifier")<br/>
+
+							for (model_name in model_list) {<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment_code"># Train the model</span><br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- TrainingModel(model_name, preprocess_train_data)<br/><br/>
+							
+								&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment_code"># Predict the outcomes for the test data</span><br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;res_predictions <- predict(Training_model, newdata = preprocess_test_data)<br/><br/>
+
+								&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment_code"># Calculate the accuracy of the predictions</span><br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;res_accuracy <- sum(res_predictions == preprocess_test_data$Survived) / nrow(preprocess_test_data)<br/><br/>
+							
+								&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment_code"># Calculate the confusion matrix</span><br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;res_cm <- table(res_predictions,preprocess_test_data$Survived)<br/><br/>
+							
+								&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment_code">## Print the results</span><br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;cat("使用test data進行預測的準確率：", res_accuracy , '\n')<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;print(res_cm)<br/>
+							}
+						</div><br/>
+					</article>
+
+					<a name="Section5"></a>
+					<article class="post">
+						<header>
+							<div class="title">
+								<h2>驗證結果</h2>
+							</div>
+						</header>
+						<img src="images/model_02.png"><br/><br/>
 					</article>
 					
+					<a name="Section6"></a>
+					<article class="post">
+						<header>
+							<div class="title">
+								<h2>實際演練</h2>
+							</div>
+						</header>
+						<article class="post">
+							<header>
+								<div class="title">
+									<h2>Demo</h2>
+								</div>
+							</header>
+							<iframe 
+							src="https://nccueric.shinyapps.io/group1/"
+							width="100%"
+							height="640px"
+							>
+						</iframe>
+						</article>
+					</article>					
 				</div>
 				<!-- Sidebar -->
 				<section id="sidebar" style="position: fixed;left: 6em;">
@@ -109,10 +161,16 @@
 									<article><header><h3><a href="#Section2">建立訓練模組</a></h3></header></article>
 								</li>
 								<li>
-									<article><header><h3><a href="#Section3">使用training data 訓練後的準確率及混淆矩陣</a></h3></header></article>
+									<article><header><h3><a href="#Section3">訓練結果</a></h3></header></article>
 								</li>
 								<li>
-									<article><header><h3><a href="#Section4">使用test data 訓練後的準確率及混淆矩陣</a></h3></header></article>
+									<article><header><h3><a href="#Section4">驗證模組</a></h3></header></article>
+								</li>
+								<li>
+									<article><header><h3><a href="#Section5">驗證結果</a></h3></header></article>
+								</li>
+								<li>
+									<article><header><h3><a href="#Section6">實際演練</a></h3></header></article>
 								</li>
 							</ul>
 						</section>

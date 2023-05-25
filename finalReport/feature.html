@@ -125,7 +125,7 @@
 						<div class="article_code">
 							str(Titanic_train)
 						</div><br/>
-						<img src="images/feature_01.png"><br/><br/>
+						<img src="images/feature_01.png" style="width: 500px;"><br/><br/>
 						<div class="article_comment">
 							<b>Sex</b>和<b>Embarked</b>不是的數值型的資料，因此需要進行encode。
 						</div>
@@ -139,7 +139,7 @@
 							unique(Titanic_train[c("Sex")]) <br/>
 							Titanic_train$Sex_factors <- as.numeric(factor(Titanic_train$Sex))
 						</div><br/>
-						<img src="images/feature_02.png"><br/><br/>
+						<img src="images/feature_02.png" style="width: 500px;"><br/><br/>
 						<div class="article_comment">
 							「Sex」欄位有 [‘male’, ‘female’] → 「Sex_factors」欄位 [2, 1]
 						</div>
@@ -153,7 +153,7 @@
 							unique(Titanic_train[c("Embarked")]) <br/>
 							Titanic_train$Embarked_factors <- as.numeric(factor(Titanic_train$Embarked))
 						</div><br/>
-						<img src="images/feature_03.png"><br/><br/>
+						<img src="images/feature_03.png" style="width: 500px;"><br/><br/>
 						<div class="article_comment">
 							「Embarked」欄位有 [‘S’, ‘C’,‘Q’] - > 「Embarked_factors」欄位 [3,1,2]
 						</div>
@@ -166,7 +166,7 @@
 						<div class="article_code">
 							str(Titanic_train_subset)
 						</div><br/>
-						<img src="images/feature_04.png"><br/><br/>
+						<img src="images/feature_04.png" style="width: 500px;"><br/><br/>
 						<div class="article_comment">
 							目前欄位都為數值型資料
 						</div>
@@ -193,7 +193,7 @@
 						<div class="article_code">
 							head(Titanic_train_subset_scale)
 						</div><br/>
-						<img src="images/feature_05.png"><br/><br/>
+						<img src="images/feature_05.png" style="width: 500px;"><br/><br/>
 						<div class="article_comment">
 							目前欄位都為數值型資料
 						</div>
