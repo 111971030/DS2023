@@ -43,14 +43,14 @@ TrainingModel <- function(model_name, train_data)
     
     ## Print the results果
     message(sprintf("======= %s Model =======", model_name))
-    # cat("使用training data進行預測的準確率：", res_accuracy , '\n')
-    # print(res_cm)
-    # cat('\n')
+    cat("使用training data進行預測的準確率：", res_accuracy , '\n')
+    print(res_cm)
+    cat('\n')
     return(Training_model)
 }
 
-model_list <- c("Logistic regression","K nearest neighbors","SVC Linear","SVC RBF","Gaussian Naive Bayes","Decision Tree","Random Forest Classifier")
-# model_list <- c("Logistic regression")
+# model_list <- c("Logistic regression","K nearest neighbors","SVC Linear","SVC RBF","Gaussian Naive Bayes","Decision Tree","Random Forest Classifier")
+model_list <- c("Logistic regression")
 for (model_name in model_list) {
   # Train the model
   Training_model <- TrainingModel(model_name, preprocess_train_data)
@@ -67,6 +67,15 @@ for (model_name in model_list) {
   ## Print the results
   cat("使用test data進行預測的準確率：", res_accuracy , '\n')
   print(res_cm)
+  
+  output_file <- "pred_"+model_name+".csv"
+  predictions <- data.frame(Id = ids, Probability = rf_pred_test[, 2])
+  # get output file path
+  out_f_path <- dirname(output_file)
+  if (!dir.exists(output_file)){
+    dir.create(out_f_path, recursive = TRUE)
+  }
+  write.csv(predictions, file = output_file, row.names = FALSE)
 }
 
 

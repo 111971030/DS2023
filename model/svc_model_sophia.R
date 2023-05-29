@@ -27,7 +27,7 @@ sapply(Titanic, function(x) sum(is.na(x)))
 # Drop the columns
 Titanic_train <- subset(Titanic, select = -c(PassengerId, Name, Ticket, Cabin))
 # Remove the rows with missing values
-Titanic_train <- Titanic_train[complete.cases(Titanic_train[,c("Embarked","Age")]),]
+# Titanic_train <- Titanic_train[complete.cases(Titanic_train[,c("Embarked","Age")]),]
 
 # 2.1 來看一下處理完剩下幾列幾欄(特徵)
 dimensions <- dim(Titanic_train)

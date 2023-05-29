@@ -1,0 +1,13 @@
+name: demo1
+title: demo1
+username:
+account: nccueric
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 9205780
+bundleId: 7275958
+url: https://nccueric.shinyapps.io/demo1/
+when: 1685336380.5998
+lastSyncTime: 1685336380.59982
+asMultiple: FALSE
+asStatic: FALSE

@@ -17,7 +17,7 @@
 			<div id="wrapper">
 				<!-- Header -->
 					<header id="header">
-						<h1><a href="#">期末報告 Group 2</a></h1>
+						<h1><a href="#">期末報告 Group 1</a></h1>
 						<nav class="links">
 							<ul>
 								<li><a href="index.html">背景介紹(Backgroud)</a></li>
@@ -230,6 +230,31 @@
 					<article class="post">
 						<header>
 							<div class="title">
+								<h2>特徵間的相關性</h2>
+							</div>
+						</header>
+						<article class="post">
+							<header>
+								<div class="title">
+									<h2>用heatmap顯示feature間的相關係數</h2>
+								</div>
+							</header>
+							<img style="width: 100%;" src="images/eda_06.png"><br/><br/>
+							<div class="article_comment">
+								大致可以觀察出<br/>
+								<ul>
+									<li>Parch(父母小孩的數量)和Sibsp(兄弟姊妹＋老婆丈夫數量)間有正相關。家族旅遊通常都是攜家帶眷。</li>
+									<li>pclass(乘客的艙等: 1 = 1st, 2 = 2nd, 3 = 3rd)和fare(票價)有負相關。頭等艙的價位較高</li>
+								</ul>
+							</div>	
+						</article>
+						
+					</article>	
+
+					<a name="Section8"></a>
+					<article class="post">
+						<header>
+							<div class="title">
 								<h2>實際演練</h2>
 							</div>
 						</header>
@@ -240,7 +265,7 @@
 								</div>
 							</header>
 							<iframe 
-							src="https://nccueric.shinyapps.io/group1/"
+							src="https://nccueric.shinyapps.io/demo1/"
 							width="100%"
 							height="640px"
 							>
@@ -272,7 +297,10 @@
 									<article><header><h3><a href="#Section6">特徵 V.S. 是否存活</a></h3></header></article>
 								</li>
 								<li>
-									<article><header><h3><a href="#Section7">實際演練</a></h3></header></article>
+									<article><header><h3><a href="#Section7">特徵間的相關性</a></h3></header></article>
+								</li>
+								<li>
+									<article><header><h3><a href="#Section8">實際演練</a></h3></header></article>
 								</li>
 							</ul>
 						</section>

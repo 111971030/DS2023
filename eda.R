@@ -13,7 +13,8 @@ library(tidyverse)
 library(DT)
 library(ggplot2)
 library(gridExtra)
-
+library(reshape2)
+source("feature.R")
 # 讀取資料
 df <- read_csv("Titanic/train.csv")
 
@@ -73,3 +74,23 @@ for (r in 1:n_rows) {
 }
 grid.arrange(grobs = plot_list, nrow = n_rows, ncol = n_cols)
 
+
+
+# Select only numeric columns for correlation
+numeric_cols <- c("Pclass","Age","SibSp","Parch","Fare","Sex_factors","Embarked_factors")
+preprocess_data <- preprocess_data(df)
+correlation <- cor(preprocess_data[, numeric_cols])
+
+# Reshape correlation matrix
+correlation_melt <- melt(correlation)
+
+# Create correlation heatmap
+heatmapPlot <- ggplot(data = correlation_melt, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile() +
+  geom_text(aes(label = round(value, 2)), color = "black") +  
+  scale_fill_gradient(low = "white", high = "steelblue") +
+  labs(x = "Features", y = "Features", fill = "Correlation") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+print(heatmapPlot)
