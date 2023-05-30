@@ -1,5 +1,5 @@
 library(shiny)
-Sys.setlocale("LC_ALL", "en_US.UTF-8")
+Sys.setlocale("en_US.UTF-8")
 if(!require('ggplot2')) {
   install.packages('ggplot2')
   library('ggplot2')

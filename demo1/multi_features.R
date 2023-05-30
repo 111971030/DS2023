@@ -2,7 +2,7 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 library(DT)
-Sys.setlocale("LC_ALL", "en_US.UTF-8")
+
 # Read data
 df <- read.csv("train.csv")
 

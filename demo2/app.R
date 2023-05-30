@@ -3,10 +3,11 @@ library(tidyverse)
 library(caret)
 library(e1071)
 library(rpart)
-
+library(randomForest)
+Sys.setlocale("LC_ALL", "en_US.UTF-8")
 # Load the feature.R file
-source("../feature.R")
-train_data <- read_csv("../Titanic/train.csv")
+source("feature.R")
+train_data <- read_csv("train.csv")
 preprocess_train_data <- preprocess_data(train_data)
 
 # UI

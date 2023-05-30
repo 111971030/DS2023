@@ -1,0 +1,14 @@
+name: DS2023
+title: DS2023
+username:
+account: nccueric
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 9158594
+bundleId: 7246837
+url: https://nccueric.shinyapps.io/DS2023/
+when: 1684739667.54267
+lastSyncTime: 1684739667.5427
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|eda.R|feature.R|Interactive_features.R|model/feature_kim.R|model/feature_rosa_v2.R|model/svc_model_sophia.R|README.md|finalReport

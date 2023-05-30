@@ -1,0 +1,14 @@
+name: group1
+title: group1
+username:
+account: nccueric
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 9158572
+bundleId: 7246885
+url: https://nccueric.shinyapps.io/group1/
+when: 1684741217.84225
+lastSyncTime: 1684741217.84227
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|eda.R|feature.R|Interactive_features.R|model/feature_kim.R|model/feature_rosa_v2.R|model/svc_model_sophia.R|README.md|finalReport
