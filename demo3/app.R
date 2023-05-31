@@ -21,6 +21,10 @@ if(!require('rpart')) {
     install.packages('rpart')
     library('rpart')
 }
+if(!require('randomForest')) {
+  install.packages('randomForest')
+  library('randomForest')
+}
 
 Sys.setlocale("LC_ALL", "en_US.UTF-8")
 
