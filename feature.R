@@ -1,4 +1,4 @@
-preprocess_data <- function(data) {
+preprocess_data <- function(data, dataType) {
     ## 資料清理
     # 0 確認資料幾列幾欄
     dimensions <- dim(data)
@@ -108,9 +108,10 @@ preprocess_data <- function(data) {
     # 6        0 -1.48   1.68  -0.552 -0.506  0.327       0.756            0.519
 
     # Convert categorical variables to factors
-    data_train_subset_scale$Survived <- ifelse(data_train_subset_scale$Survived == 1, "Yes", "No")
-    data_train_subset_scale$Survived <- as.factor(data_train_subset_scale$Survived)
-    
+    if(dataType == "training"){
+      data_train_subset_scale$Survived <- ifelse(data_train_subset_scale$Survived == 1, "Yes", "No")
+      data_train_subset_scale$Survived <- as.factor(data_train_subset_scale$Survived)
+    }
     
     #固定random資料
     set.seed(1)

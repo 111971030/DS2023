@@ -24,9 +24,10 @@ ui <- fluidPage(
       h4("Training Accuracy"),
       verbatimTextOutput("trainingAccuracyOutput"),
       h4("Confusion Matrix"),
-      verbatimTextOutput("confusionMatrixOutput"),
+      plotOutput("confusionMatrixOutput"),
       h4("Feature Importance"),
-      verbatimTextOutput("featureImportanceOutput")
+      verbatimTextOutput("featureImportanceError"),
+      plotOutput("featureImportanceOutput")
     )
   )
 )
@@ -60,12 +61,21 @@ server <- function(input, output) {
     res_cm <- table(res_predictions,train_data$Survived)
     
     if (model_name == "K nearest neighbors") {
-      var_imp <- NULL
+      importance_df <- NULL
     } else {
-      var_imp <- varImp(Training_model)$importance
+       # Plot importance list 
+      importance <- varImp(Training_model)$importance
+      importance <- importance[order(importance$Overall, decreasing = TRUE), , drop = FALSE]
+      importance$Feature <- rownames(importance)
+      # Rename the "Sex_factors" feature to "Sex"
+      # Rename the "Embarked_factors" feature to "Embarked"
+      importance$Feature <- ifelse(importance$Feature == "Sex_factors", "Sex", importance$Feature)
+      importance$Feature <- ifelse(importance$Feature == "Embarked_factors", "Embarked", importance$Feature)
+      importance_df <- as.data.frame(importance)
+      importance_df$Feature <- factor(importance_df$Feature, levels = importance_df$Feature)
     }
     
-    return(list(accuracy = res_accuracy, cm = res_cm, var_imp = var_imp))
+    return(list(accuracy = res_accuracy, cm = res_cm, var_imp = importance_df))
   }
   
   
@@ -87,23 +97,36 @@ server <- function(input, output) {
     }
   })
   
-  output$confusionMatrixOutput <- renderPrint({
+  output$confusionMatrixOutput <- renderPlot({
     if (!is.null(results$cm)) {
-      print(results$cm)
+      ggplot(as.data.frame(res_cm), aes(res_predictions, Var2, fill = Freq)) +
+        geom_tile() +
+        geom_text(aes(label = Freq), color = "black", size = 4) +
+        scale_fill_gradient(low = "white", high = "steelblue") +
+        labs(title = paste(input$model_name, " Confusion Matrix", sep = ""), x = "Prediction", y = "Accuracy")
     } else {
       cat(" ")
     }
   })
-  
-  output$featureImportanceOutput <- renderPrint({
+
+  output$featureImportanceOutput <- renderPlot({
     if (!is.null(results$var_imp)) {
-      print(results$var_imp)
+      ggplot(results$var_imp, aes(x = Feature, y = Overall)) +
+        geom_bar(stat = "identity", fill = "steelblue") +
+        labs(title = paste(input$model_name, " Feature Importance", sep = ""), x = "Feature", y = "Importance") +
+        theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
     } else {
       if (input$model_name == "K nearest neighbors") {
         cat("該模型不支援特徵重要性排序\n")
       } else {
         cat(" ")
       }
+    }
+  })
+  
+  output$featureImportanceError <- renderText({
+    if (is.null(results$var_imp)) {
+      cat("該模型不支援特徵重要性排序\n")
     }
   })
   
