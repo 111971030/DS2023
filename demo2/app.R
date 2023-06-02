@@ -235,6 +235,7 @@ server <- function(input, output) {
   
   output$rocOutput <- renderPlot({
     if (!is.null(results$roc)) {
+      par(pty="s")
       plot(results$roc, col = "steelblue", legacy.axes = TRUE, print.auc = TRUE)
     } else {
       NULL
