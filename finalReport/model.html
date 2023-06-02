@@ -77,17 +77,80 @@
 							}<br/>
 						</div><br/>
 					</article>
+					
 					<a name="Section3"></a>
 					<article class="post">
 						<header>
 							<div class="title">
-								<h2>訓練結果</h2>
+								<h2>訓練</h2>
+							</div>
+						</header>
+							將訓練資料進行切分，80%作為訓練資料集，10%作為測試資料集，10%為驗證資料集。<br/>
+							計算各個模組在不同資料集中的Accuracy, F1 score, Precision, Recall 和 ACU ROC的數值<br/><br/>
+						<div class="article_code">
+							res_predictions <- predict(Training_model, newdata = data)<br/>
+							res_accuracy <- sum(res_predictions == train_data$Survived) / nrow(train_data)<br/>
+							<span class="comment_code"># Compute confusion metrics</span><br/>
+							res_confusion <- confusionMatrix(res_predictions, train_data$Survived)$table<br/>
+							<span class="comment_code"># Calculate F1 score, precision, and recall</span><br/>
+							tp <- res_confusion[2, 2]<br/>
+							fp <- res_confusion[1, 2]<br/>
+							fn <- res_confusion[2, 1]<br/><br/>
+
+							res_precision <- tp / (tp + fp)<br/>
+							res_recall <- tp / (tp + fn)<br/>
+							res_f1_score <- (2 * res_precision * res_recall) / (res_precision + res_recall)<br/><br/>
+							
+							<span class="comment_code"># Compute ROC AUC value</span><br/>
+							res_predictions_prob <- predict(Training_model, newdata = train_data, type = "prob")[, 2]<br/>
+							roc_obj <- roc(train_data$Survived, res_predictions_prob, quiet=TRUE)<br/>
+							res_auc <- roc_obj$auc<br/><br/>
+							
+							predInfo <- c(accuracy = round(res_accuracy, digits = 4) , F1 = round(res_f1_score, digits = 4), precision = round(res_precision, digits = 4), recall = round(res_recall, digits = 4), auc = round(res_auc, digits = 4))<br/>
+							
+						</div><br/>
+					</article>
+
+					<a name="Section4"></a>
+					<article class="post">
+						<header>
+							<div class="title">
+								<h2>進行預測</h2>
+							</div>
+						</header>
+							使用測試資料進行預測，並將結果輸出成csv檔<br/>
+						<div class="article_code">
+							res_predictions <- predict(Training_model, newdata = test_data)<br/>
+							<span class="comment_code"># Create predictions data frame</span><br/>
+							dimensions <- dim(test_data)<br/>
+							ids <- 0:(dimensions[1] - 1)<br/>
+							predictions <- data.frame(Id = ids, Probability = res_predictions)<br/><br/>
+
+							<span class="comment_code"># Define output file path</span><br/>
+							output_file <- paste("predictions/", model_name, " prediction.csv", sep = "")<br/>
+							out_f_path <- dirname(output_file)<br/><br/>
+
+							<span class="comment_code"># Create output directory if it doesn't exist</span><br/>
+							if (!dir.exists(out_f_path)) {<br/>
+								&nbsp;&nbsp;&nbsp;&nbsp;dir.create(out_f_path, recursive = TRUE)<br/>
+							}<br/>
+
+							print(sprintf("Write predictions to CSV file. Path : %s ", output_file))<br/>
+							write.csv(predictions, file = output_file, row.names = FALSE)_precision, digits = 4), recall = round(res_recall, digits = 4), auc = round(res_auc, digits = 4))<br/><br/>
+						</div><br/>
+					</article>
+
+					<a name="Section5"></a>
+					<article class="post">
+						<header>
+							<div class="title">
+								<h2>列出結果</h2>
 							</div>
 						</header>
 						<img src="images/model_01.png" style="width: 100%;"><br/><br/>
 					</article>
 					
-					<a name="Section4"></a>
+					<a name="Section6"></a>
 					<article class="post">
 						<header>
 							<div class="title">
@@ -103,7 +166,7 @@
 							<iframe 
 							src="https://nccueric.shinyapps.io/demo2/"
 							width="100%"
-							height="640px"
+							height="800px"
 							>
 						</iframe>
 						</article>
@@ -121,10 +184,16 @@
 									<article><header><h3><a href="#Section2">建立訓練模組</a></h3></header></article>
 								</li>
 								<li>
-									<article><header><h3><a href="#Section3">訓練結果</a></h3></header></article>
+									<article><header><h3><a href="#Section3">訓練</a></h3></header></article>
 								</li>
 								<li>
-									<article><header><h3><a href="#Section4">實際演練</a></h3></header></article>
+									<article><header><h3><a href="#Section4">進行預測</a></h3></header></article>
+								</li>
+								<li>
+									<article><header><h3><a href="#Section5">列出結果</a></h3></header></article>
+								</li>
+								<li>
+									<article><header><h3><a href="#Section6">實際演練</a></h3></header></article>
 								</li>
 							</ul>
 						</section>

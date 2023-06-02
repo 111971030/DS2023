@@ -78,7 +78,7 @@ TrainingModel <- function(model_name, splited_data)
     
     dfPred <- as.table(dfPred)
     print(dfPred)
-
+    
     return(Training_model)
 }
 
