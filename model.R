@@ -4,7 +4,8 @@ library('e1071')
 library(rpart)
 library(ggplot2)
 library(dplyr)
-# library('yardstick')
+library(pROC)
+
 # Load the feature.R file
 source("feature.R")
 train_data <- read_csv("Titanic/train.csv")
@@ -13,12 +14,39 @@ preprocess_train_data <- preprocess_data(train_data, "training")
 test_data <- read_csv("Titanic/test.csv")
 preprocess_test_data <- preprocess_data(test_data, "test")
 
+#=========== 取得預測結果 =========== 
+GetPredInfo <- function(Training_model, train_data){
+  # Predict on the training dataset
+  res_predictions <- predict(Training_model, newdata = train_data)
+  res_accuracy <- sum(res_predictions == train_data$Survived) / nrow(train_data)
+  # Compute confusion metrics
+  res_confusion <- confusionMatrix(res_predictions, train_data$Survived)$table
+  # Calculate F1 score, precision, and recall
+  tp <- res_confusion[2, 2]
+  fp <- res_confusion[1, 2]
+  fn <- res_confusion[2, 1]
+
+  res_precision <- tp / (tp + fp)
+  res_recall <- tp / (tp + fn)
+  res_f1_score <- (2 * res_precision * res_recall) / (res_precision + res_recall)
+  
+  # Compute ROC AUC value
+  res_predictions_prob <- predict(Training_model, newdata = train_data, type = "prob")[, 2]
+  roc_obj <- roc(train_data$Survived, res_predictions_prob, quiet=TRUE)
+  res_auc <- roc_obj$auc
+  
+  predInfo <- c(accuracy = round(res_accuracy, digits = 4) , F1 = round(res_f1_score, digits = 4), precision = round(res_precision, digits = 4), recall = round(res_recall, digits = 4), auc = round(res_auc, digits = 4))
+  
+  return(predInfo)
+}
 
 #=========== 訓練模型 =========== 
-TrainingModel <- function(model_name, train_data)
+TrainingModel <- function(model_name, splited_data)
 {
-    model_name <- "Logistic regression"
-    train_data <- preprocess_train_data
+    # model_name <- "Logistic regression"
+    train_data <- splited_data$train
+    valid_data <- splited_data$valid
+    test_data <- splited_data$test
     # Set up the trainControl object for 5-fold cross-validation
     ctrl <- trainControl(method = "cv", number = 5, savePredictions = "all", classProbs = TRUE)
     if(model_name == "Logistic regression"){
@@ -36,68 +64,43 @@ TrainingModel <- function(model_name, train_data)
     } else if(model_name == "Random Forest Classifier"){
         Training_model <- train(Survived~., data = train_data, method = 'rf', trControl = ctrl)
     }
-
-    # Predict on the training set
-    res_predictions <- predict(Training_model, newdata = train_data)
-    res_accuracy <- sum(res_predictions == train_data$Survived) / nrow(train_data)
-    res_cm <- table(res_predictions, train_data$Survived)
     
-    # Compute additional metrics
-    res_confusion <- confusionMatrix(res_predictions, train_data$Survived)
-    res_f1 <- res_confusion$byClass["F1"]
-    res_precision <- res_confusion$byClass["Pos Pred Value"]
-    res_recall <- res_confusion$byClass["Sensitivity"]
-
-    # Compute ROC AUC value
-    res_predictions_prob <- predict(Training_model, newdata = train_data, type = "prob")[, 2]
-    roc_obj <- roc(train_data$Survived, res_predictions_prob)
-    res_auc <- roc_obj$auc
+    trainingPred <- GetPredInfo(Training_model, train_data)
+    validPred <- GetPredInfo(Training_model, valid_data)
+    testPred <- GetPredInfo(Training_model, test_data)
     
-    # Plot importance list 
-    importance <- varImp(Training_model)$importance
-    importance <- importance[order(importance$Overall, decreasing = TRUE), , drop = FALSE]
-    importance$Feature <- rownames(importance)
-    # Rename the "Sex_factors" feature to "Sex"
-    # Rename the "Embarked_factors" feature to "Embarked"
-    importance$Feature <- ifelse(importance$Feature == "Sex_factors", "Sex", importance$Feature)
-    importance$Feature <- ifelse(importance$Feature == "Embarked_factors", "Embarked", importance$Feature)
-    importance_df <- as.data.frame(importance)
-    importance_df$Feature <- factor(importance_df$Feature, levels = importance_df$Feature)
-    
-    
-    ggplot(importance_df, aes(x = Feature, y = Overall)) +
-      geom_bar(stat = "identity", fill = "steelblue") +
-      labs(title = paste(model_name, " Feature Importance", sep = ""), x = "Feature", y = "Importance") +
-      theme(axis.text.x = element_text(angle = 45, hjust = 1))
-    
+    dfPred <- rbind(trainingPred,validPred,testPred)
     
     # Print the results
     message(sprintf("======= %s Model =======", model_name))
-    cat("Accuracy :", res_accuracy, "\n")
-    cat("F1 Score :", res_f1, "\n")
-    cat("Precision:", res_precision, "\n")
-    cat("Recall   :", res_recall, "\n")
-    cat("ROC AUC  :", res_auc, "\n")
-    # Plot confusion matrix
-    plot_cm <- ggplot(as.data.frame(res_cm), aes(res_predictions, Var2, fill = Freq)) +
-      geom_tile() +
-      geom_text(aes(label = Freq), color = "black", size = 4) +
-      scale_fill_gradient(low = "white", high = "steelblue") +
-      labs(title = paste(model_name, " Confusion Matrix", sep = ""), x = "Prediction", y = "Accuracy")
-    print(plot_cm)
-    cat("\n")
-    # Plot ROC curve
-    par(pty="s")
-    plot(roc_obj, main = paste(model_name, " ROC Curve", sep = ""), col = "blue", legacy.axes = TRUE, print.auc = TRUE)
+    rownames(dfPred) <- c('Training data', 'Vaild data', 'Test data')
+    colnames(dfPred) <- c('Accuracy', 'F1 Score', 'Precision', 'Recall', 'AUC')
     
+    dfPred <- as.table(dfPred)
+    print(dfPred)
+
     return(Training_model)
 }
 
-# model_list <- c("Logistic regression","K nearest neighbors","SVC Linear","SVC RBF","Gaussian Naive Bayes","Decision Tree","Random Forest Classifier")
-model_list <- c("Logistic regression")
+model_list <- c("Logistic regression","K nearest neighbors","SVC Linear","SVC RBF","Gaussian Naive Bayes","Decision Tree","Random Forest Classifier")
+# model_list <- c("Logistic regression")
 for (model_name in model_list) {
+  #固定random資料
+  set.seed(333)
+  # 將現有資料 切分 80 % 作為訓練資料集 10 % 為 測試資料集 10 % 為 驗證資料集
+  spec = c(train = .8, test = .1, valid = .1)
+  
+  data_train_sample = sample(cut(
+    seq(nrow(preprocess_train_data)), 
+    nrow(preprocess_train_data)*cumsum(c(0,spec)),
+    labels = names(spec)
+  ))
+  
+  splited_data = split(preprocess_train_data, data_train_sample)
+  
+  
   # Train the model
-  Training_model <- TrainingModel(model_name, preprocess_train_data)
+  Training_model <- TrainingModel(model_name, splited_data)
   
   # Generate predictions
   res_predictions <- predict(Training_model, newdata = preprocess_test_data)
@@ -108,7 +111,7 @@ for (model_name in model_list) {
   predictions <- data.frame(Id = ids, Probability = res_predictions)
 
   # Define output file path
-  output_file <- paste("predictions/pred_", model_name, ".csv", sep = "")
+  output_file <- paste("predictions/", model_name, " prediction.csv", sep = "")
   out_f_path <- dirname(output_file)
 
   # Create output directory if it doesn't exist
@@ -116,7 +119,7 @@ for (model_name in model_list) {
     dir.create(out_f_path, recursive = TRUE)
   }
 
-  # Write predictions to CSV file
+  print(sprintf("Write predictions to CSV file. Path : %s ", output_file))
   write.csv(predictions, file = output_file, row.names = FALSE)
 }
 

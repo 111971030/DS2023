@@ -5,10 +5,10 @@ account: nccueric
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9211220
-bundleId: 7279305
+bundleId: 7295465
 url: https://nccueric.shinyapps.io/demo2/
-when: 1685409806.7097
-lastSyncTime: 1685409806.70972
+when: 1685688415.46173
+lastSyncTime: 1685688415.46177
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: app_model.R

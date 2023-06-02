@@ -113,18 +113,5 @@ preprocess_data <- function(data, dataType) {
       data_train_subset_scale$Survived <- as.factor(data_train_subset_scale$Survived)
     }
     
-    #固定random資料
-    set.seed(1)
-    # 將現有資料 切分 80 % 作為訓練資料集 10 % 為 測試資料集 10 % 為 驗證資料集
-    spec = c(train = .8, test = .1, validate = .1)
-
-    data_train_sample = sample(cut(
-    seq(nrow(data_train_subset_scale)), 
-    nrow(data_train_subset_scale)*cumsum(c(0,spec)),
-    labels = names(spec)
-    ))
-
-    res = split(data_train_subset_scale, data_train_sample)
-
     return(data_train_subset_scale)
 }
