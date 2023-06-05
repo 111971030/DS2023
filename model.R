@@ -5,6 +5,7 @@ library(rpart)
 library(ggplot2)
 library(dplyr)
 library(pROC)
+library(randomForest)
 
 # Load the feature.R file
 source("feature.R")
@@ -50,19 +51,23 @@ TrainingModel <- function(model_name, splited_data)
     # Set up the trainControl object for 5-fold cross-validation
     ctrl <- trainControl(method = "cv", number = 5, savePredictions = "all", classProbs = TRUE)
     if(model_name == "Logistic regression"){
-        Training_model <- train(Survived ~ ., data = train_data, method = "glm", trControl = ctrl, family = "binomial")
+      Training_model <- train(Survived ~ ., data = train_data, method = "glm", trControl = ctrl, family = "binomial")
     } else if(model_name == "K nearest neighbors"){
-        Training_model <- train(Survived ~ ., data = train_data, method = "knn", trControl = ctrl, preProcess = c("center", "scale"),tuneLength = 3)
+      Training_model <- train(Survived ~ ., data = train_data, method = "knn", trControl = ctrl, preProcess = c("center", "scale"),tuneLength = 3)
     } else if(model_name == "SVC Linear"){
-        Training_model <- train(Survived ~ ., data = train_data, kernel = "svmLinear", trControl = ctrl, scale = FALSE)
-    } else if(model_name == "SVC RBF"){
-        Training_model <- train(Survived ~ ., data = train_data, kernel = "svmRadial", trControl = ctrl, scale = FALSE)
+      cost <- 10  # Cost parameter
+      epsilon <- 0.1  # Epsilon parameter
+      Training_model <- train(Survived ~ ., data = train_data, kernel = "svmLinear", trControl = ctrl, scale = FALSE, cost = cost, epsilon = epsilon)
     } else if(model_name == "Gaussian Naive Bayes"){
-        Training_model <- train(Survived ~ ., data = train_data, kernel = "naiveBayes", trControl = ctrl)
+      Training_model <- train(Survived ~ ., data = train_data, kernel = "naiveBayes", trControl = ctrl)
     } else if(model_name == "Decision Tree"){
-        Training_model <- train(Survived~., data = train_data, method = 'rpart', trControl = ctrl)
+      cp <- 0.001  # Complexity parameter
+      minsplit <- 5  # Minimum number of observations required for a split
+      Training_model <- train(Survived ~ ., data = train_data, method = "rpart", trControl = ctrl, cp = cp, minsplit = minsplit)
     } else if(model_name == "Random Forest Classifier"){
-        Training_model <- train(Survived~., data = train_data, method = 'rf', trControl = ctrl)
+      n_trees <- 100
+      max_depth <- 10
+      Training_model <- train(Survived ~ ., data = train_data, method = "rf", trControl = ctrl, ntree = n_trees, maxdepth = max_depth)
     }
     
     trainingPred <- GetPredInfo(Training_model, train_data)
@@ -82,7 +87,7 @@ TrainingModel <- function(model_name, splited_data)
     return(Training_model)
 }
 
-model_list <- c("Logistic regression","K nearest neighbors","SVC Linear","SVC RBF","Gaussian Naive Bayes","Decision Tree","Random Forest Classifier")
+model_list <- c("Logistic regression","K nearest neighbors","SVC Linear","Gaussian Naive Bayes","Decision Tree","Random Forest Classifier")
 # model_list <- c("Logistic regression")
 for (model_name in model_list) {
   #固定random資料

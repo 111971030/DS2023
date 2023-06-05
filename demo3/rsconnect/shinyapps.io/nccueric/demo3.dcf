@@ -5,9 +5,9 @@ account: nccueric
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 9218872
-bundleId: 7284295
+bundleId: 7307221
 url: https://nccueric.shinyapps.io/demo3/
-when: 1685495209.42579
-lastSyncTime: 1685495209.42581
+when: 1685981334.86318
+lastSyncTime: 1685981334.8632
 asMultiple: FALSE
 asStatic: FALSE

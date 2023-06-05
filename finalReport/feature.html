@@ -56,8 +56,8 @@
 								<th>Parch</th>
 								<th>Ticket</th>
 								<th>Fare</th>
-								<th>Cabin</th>
-								<th>Embarked</th>
+								<th>Cabin<br/>(房間號碼)</th>
+								<th>Embarked<br/>(出發港口)</th>
 							</tr>
 							<tr>
 								<td>0</td>
@@ -75,7 +75,7 @@
 							</tr>
 						</table>
 						<div class="article_comment">
-							發現<b>Age</b>、<b>Cabin</b>與<b>Embarked</b>三個欄位都有missing data，其中<b>Cabin</b>有687筆missing data。
+							發現<b>Age</b>、<b>Cabin</b>(房間號碼)與<b>Embarked</b>(出發港口)三個欄位都有missing data，其中<b>Cabin</b>(房間號碼)有687筆missing data。
 						</div>
 						
 						<hr>
@@ -83,8 +83,8 @@
 						<h2 class="article_head">
 							②　Drop不必要欄位
 						</h2>
-						●　PassengerId、Name、Ticket等欄位對於是否存活沒有影響， 且Cabin的missing data過多，因此選擇將這些columns刪除。<br/>
-						●　再來，將Embarked和Age的資料中有missing data的rows刪除 <br/>
+						●　PassengerId、Name、Ticket等欄位對於是否存活沒有影響， 且Cabin(房間號碼)的missing data過多，因此選擇將這些欄位刪除。<br/>
+						●　再來，將Embarked(出發港口)和Age的資料中有missing data的資料刪除 <br/>
 						
 						<div class="article_code">
 							Titanic_train <- subset(Titanic, select = -c(PassengerId, Name, Ticket, Cabin)) <br/>
@@ -127,7 +127,7 @@
 						</div><br/>
 						<img src="images/feature_01.png" style="width: 500px;"><br/><br/>
 						<div class="article_comment">
-							<b>Sex</b>和<b>Embarked</b>不是的數值型的資料，因此需要進行encode。
+							<b>Sex</b>和<b>Embarked(出發港口)</b>不是的數值型的資料，因此需要進行encode。
 						</div>
 
 						<hr>
@@ -147,7 +147,7 @@
 						<hr>
 						
 						<h2 class="article_head">
-							③　查看「Embarked」欄位裡頭有哪些值，並將資料轉換成數值型。
+							③　查看「Embarked」(出發港口)欄位裡頭有哪些值，並將資料轉換成數值型。
 						</h2>
 						<div class="article_code">
 							unique(Titanic_train[c("Embarked")]) <br/>

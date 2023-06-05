@@ -15,7 +15,7 @@ ui <- fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      selectInput("model_name", "Select model", choices = c("Logistic regression", "K nearest neighbors", "SVC Linear", "SVC RBF", "Gaussian Naive Bayes", "Decision Tree", "Random Forest Classifier")),
+      selectInput("model_name", "Select model", choices = c("Logistic regression", "K nearest neighbors", "SVC Linear", "Gaussian Naive Bayes", "Decision Tree", "Random Forest Classifier")),
       actionButton("runButton", "Run")
     ),
     

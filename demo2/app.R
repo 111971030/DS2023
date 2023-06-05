@@ -26,7 +26,7 @@ ui <- fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      selectInput("model_name", "Select model", choices = c("Logistic regression", "K nearest neighbors", "SVC Linear", "SVC RBF", "Gaussian Naive Bayes", "Decision Tree", "Random Forest Classifier")),
+      selectInput("model_name", "Select model", choices = c("Logistic regression", "K nearest neighbors", "SVC Linear", "Gaussian Naive Bayes", "Decision Tree", "Random Forest Classifier")),
       actionButton("runButton", "Run")
     ),
     
@@ -104,20 +104,24 @@ server <- function(input, output) {
     # Set up the trainControl object for 5-fold cross-validation
     ctrl <- trainControl(method = "cv", number = 5, savePredictions = "all", classProbs = TRUE)
     
-    if (model_name == "Logistic regression") {
+    if(model_name == "Logistic regression"){
       training_model <- train(Survived ~ ., data = train_data, method = "glm", trControl = ctrl, family = "binomial")
-    } else if (model_name == "K nearest neighbors") {
-      training_model <- train(Survived ~ .,data = train_data,method = "knn",trControl = ctrl,preProcess = c("center", "scale"),tuneLength = 3)
-    } else if (model_name == "SVC Linear") {
-      training_model <- train(Survived ~ ., data = train_data, kernel = "svmLinear", trControl = ctrl, scale = FALSE)
-    } else if (model_name == "SVC RBF") {
-      training_model <- train(Survived ~ ., data = train_data, kernel = "svmRadial", trControl = ctrl, scale = FALSE)
-    } else if (model_name == "Gaussian Naive Bayes") {
+    } else if(model_name == "K nearest neighbors"){
+      training_model <- train(Survived ~ ., data = train_data, method = "knn", trControl = ctrl, preProcess = c("center", "scale"),tuneLength = 3)
+    } else if(model_name == "SVC Linear"){
+      cost <- 10  # Cost parameter
+      epsilon <- 0.1  # Epsilon parameter
+      training_model <- train(Survived ~ ., data = train_data, kernel = "svmLinear", trControl = ctrl, scale = FALSE, cost = cost, epsilon = epsilon)
+    } else if(model_name == "Gaussian Naive Bayes"){
       training_model <- train(Survived ~ ., data = train_data, kernel = "naiveBayes", trControl = ctrl)
-    } else if (model_name == "Decision Tree") {
-      training_model <- train(Survived ~ ., data = train_data, method = "rpart", trControl = ctrl)
-    } else if (model_name == "Random Forest Classifier") {
-      training_model <- train(Survived ~ ., data = train_data, method = "rf", trControl = ctrl)
+    } else if(model_name == "Decision Tree"){
+      cp <- 0.001  # Complexity parameter
+      minsplit <- 5  # Minimum number of observations required for a split
+      training_model <- train(Survived ~ ., data = train_data, method = "rpart", trControl = ctrl, cp = cp, minsplit = minsplit)
+    } else if(model_name == "Random Forest Classifier"){
+      n_trees <- 100
+      max_depth <- 10
+      training_model <- train(Survived ~ ., data = train_data, method = "rf", trControl = ctrl, ntree = n_trees, maxdepth = max_depth)
     }
     
     # Get prediction information

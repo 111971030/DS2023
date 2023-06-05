@@ -38,8 +38,10 @@
 								<h2>設定K-fold</h2>
 							</div>
 						</header>
+						<h2 class="article_head">
+							設定訓練模組為5-fold，進行交叉驗證
+						</h2>
 						<div class="article_code">
-							<span class="comment_code"># Set up the trainControl object for 5-fold cross-validation</span><br/>
 							ctrl <- trainControl(method = "cv", number = 5, savePredictions = "all", classProbs = TRUE)<br/>
 						</div><br/>
 					</article>
@@ -50,32 +52,18 @@
 								<h2>建立訓練模組</h2>
 							</div>
 						</header>
-						<ul>
-							<li>Logistic regression</li>
-							<li>K nearest neighbors</li>
-							<li>SVC Linear</li>
-							<li>SVC RBF</li>
-							<li>Gaussian Naive Bayes</li>
-							<li>Decision Tree</li>
-							<li>Random Forest Classifier</li>
-						</ul>
-						<div class="article_code">
-							if(model_name == "Logistic regression"){<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived ~ ., data = train_data, method = "glm", trControl = ctrl, family = "binomial")<br/>
-							} else if(model_name == "K nearest neighbors"){<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived ~ ., data = train_data, method = "knn", trControl = ctrl, preProcess = c("center", "scale"),tuneLength = 3)<br/>
-							} else if(model_name == "SVC Linear"){<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived ~ ., data = train_data, kernel = "svm", trControl = ctrl, scale = FALSE)<br/>
-							} else if(model_name == "SVC RBF"){<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived ~ ., data = train_data, kernel = "radial", trControl = ctrl, scale = FALSE)<br/>
-							} else if(model_name == "Gaussian Naive Bayes"){<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived ~ ., data = train_data, kernel = "naiveBayes", trControl = ctrl)<br/>
-							} else if(model_name == "Decision Tree"){<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived~., data = train_data, method = 'rpart', trControl = ctrl)<br/>
-							} else if(model_name == "Random Forest Classifier"){<br/>
-								&nbsp;&nbsp;&nbsp;&nbsp;Training_model <- train(Survived~., data = train_data, method = 'rf', trControl = ctrl)<br/>
-							}<br/>
-						</div><br/>
+						<h3 class="article_head">
+							利用下列6種模型來訓練並進行比較
+							<ul>
+								<li>Logistic regression</li>
+								<li>K nearest neighbors</li>
+								<li>SVC Linear</li>
+								<li>Gaussian Naive Bayes</li>
+								<li>Decision Tree</li>
+								<li>Random Forest Classifier</li>
+							</ul>
+						</h3>
+						<img src="images/model_code_01.png" style="width: 100%;"><br/><br/>
 					</article>
 					
 					<a name="Section3"></a>
@@ -85,8 +73,9 @@
 								<h2>訓練</h2>
 							</div>
 						</header>
-							將訓練資料進行切分，80%作為訓練資料集，10%作為測試資料集，10%為驗證資料集。<br/>
-							計算各個模組在不同資料集中的Accuracy, F1 score, Precision, Recall 和 ACU ROC的數值<br/><br/>
+						<h2 class="article_head">
+							將訓練資料進行切分，80%作為訓練資料集，10%作為測試資料集，10%為驗證資料集。
+						</h2>
 						<div class="article_code">
 							res_predictions <- predict(Training_model, newdata = data)<br/>
 							res_accuracy <- sum(res_predictions == train_data$Survived) / nrow(train_data)<br/>
@@ -109,6 +98,9 @@
 							predInfo <- c(accuracy = round(res_accuracy, digits = 4) , F1 = round(res_f1_score, digits = 4), precision = round(res_precision, digits = 4), recall = round(res_recall, digits = 4), auc = round(res_auc, digits = 4))<br/>
 							
 						</div><br/>
+						<div class="article_comment">
+							計算各個模組在不同資料集中的<b>Accuracy, F1 score, Precision, Recall</b>和<b>ACU ROC</b>的數值
+						</div>
 					</article>
 
 					<a name="Section4"></a>
@@ -118,7 +110,9 @@
 								<h2>進行預測</h2>
 							</div>
 						</header>
-							使用測試資料進行預測，並將結果輸出成csv檔<br/>
+						<h2 class="article_head">
+							使用測試資料進行預測，並將結果輸出成CSV檔<br/>
+						</h2>
 						<div class="article_code">
 							res_predictions <- predict(Training_model, newdata = test_data)<br/>
 							<span class="comment_code"># Create predictions data frame</span><br/>
@@ -138,6 +132,9 @@
 							print(sprintf("Write predictions to CSV file. Path : %s ", output_file))<br/>
 							write.csv(predictions, file = output_file, row.names = FALSE)_precision, digits = 4), recall = round(res_recall, digits = 4), auc = round(res_auc, digits = 4))<br/><br/>
 						</div><br/>
+						<div class="article_comment">
+							CSV檔案會存放在<b>predictions</b>資料夾下，檔名為<b>模組名稱 prediction.csv</b>
+						</div>
 					</article>
 
 					<a name="Section5"></a>
@@ -148,6 +145,9 @@
 							</div>
 						</header>
 						<img src="images/model_01.png" style="width: 100%;"><br/><br/>
+						<div class="article_comment">
+							從結果來看<b>Gaussian Naive Bayes</b>和<b>Random Forest Classifier</b>的模組預測較好
+						</div>
 					</article>
 					
 					<a name="Section6"></a>
