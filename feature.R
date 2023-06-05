@@ -22,7 +22,7 @@ preprocess_data <- function(data, dataType) {
     data_train <- subset(data, select = -c(PassengerId, Name, Ticket, Cabin))
     # Remove the rows with missing values
     data_train$Fare[is.na(data_train$Fare)] <- mean(data_train$Fare, na.rm = TRUE)
-    data_train <- data_train[complete.cases(data_train[,c("Embarked","Age")]),]
+    # data_train <- data_train[complete.cases(data_train[,c("Embarked","Age")]),]
 
     # 2.1 來看一下處理完剩下幾列幾欄(特徵)
     dimensions <- dim(data_train)
@@ -90,6 +90,11 @@ preprocess_data <- function(data, dataType) {
     # $ Embarked_factors: num [1:712] 3 1 3 3 3 3 3 3 1 3 ...
     # ----> 目前欄位都為數值型資料了!!! 這樣待會就可以順利匯入模型，進行預測了。
 
+    data_train_subset$Embarked_factors[is.na(data_train_subset$Embarked_factors)] <- mean(data_train_subset$Embarked_factors, na.rm = TRUE)
+    data_train_subset$Age[is.na(data_train_subset$Age)] <- mean(data_train_subset$Age, na.rm = TRUE)
+    
+    (sapply(data_train, function(x) sum(is.na(x))))
+    
     # 資料標準化(standardization)
     # 因為在資料中，不同資料欄位與資料值所組成，他們分佈狀況可能都不盡相同，因此，就必須將特徵資料按比例縮放，讓資料落在某一特定的區間。
     data_train_subset_scale <- data_train_subset

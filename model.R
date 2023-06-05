@@ -109,11 +109,13 @@ for (model_name in model_list) {
   
   # Generate predictions
   res_predictions <- predict(Training_model, newdata = preprocess_test_data)
+  res_predictions <- ifelse(res_predictions == "Yes", 1, 0)
   
   # Create predictions data frame
   dimensions <- dim(preprocess_test_data)
-  ids <- 0:(dimensions[1] - 1)
-  predictions <- data.frame(Id = ids, Probability = res_predictions)
+  ids <- 892:(892 + dimensions[1] - 1)
+  predictions <- data.frame(PassengerId = ids, Survived = res_predictions)
+  
 
   # Define output file path
   output_file <- paste("predictions/", model_name, " prediction.csv", sep = "")
