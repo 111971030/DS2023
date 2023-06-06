@@ -126,7 +126,7 @@ for (model_name in model_list) {
     dir.create(out_f_path, recursive = TRUE)
   }
 
-  print(sprintf("Write predictions to CSV file. Path : %s ", output_file))
+  # print(sprintf("Write predictions to CSV file. Path : %s ", output_file))
   write.csv(predictions, file = output_file, row.names = FALSE)
 }
 
